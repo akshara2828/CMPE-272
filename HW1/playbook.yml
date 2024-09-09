@@ -1,0 +1,39 @@
+---
+- name: Manage web servers
+  hosts: webservers
+  become: yes
+  tasks:
+
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+
+    - name: Start Apache
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Deploy index.html for VM1
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <body>
+            <h1>Hello World from SJSU-1</h1>
+          </body>
+          </html>
+      when: inventory_hostname == "vm1"
+
+    - name: Deploy index.html for VM2
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <body>
+            <h1>Hello World from SJSU-2</h1>
+          </body>
+          </html>
+      when: inventory_hostname == "vm2"
+
